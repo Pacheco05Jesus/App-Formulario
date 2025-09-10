@@ -1,3 +1,29 @@
 {
-"Nombre": ["Ana Gómez", "Carlos López", "Camilo Pérez"]
+  [
+  {
+    "name": "Ana Gómez",
+    "lastMessage": "¿Nos vemos mañana?",
+    "avatarUrl": "https://i.pravatar.cc/150?img=1",
+    "lastMessageTime": "10:30 AM"
+  },
+  {
+    "name": "Carlos López",
+    "lastMessage": "Te mando los archivos.",
+    "avatarUrl": "https://i.pravatar.cc/150?img=2",
+    "lastMessageTime": "9:15 AM"
+  },
+  {
+    "name": "María Pérez",
+    "lastMessage": "¡Feliz cumpleaños!",
+    "avatarUrl": "https://i.pravatar.cc/150?img=3",
+    "lastMessageTime": "Ayer"
+  },
+  {
+    "name": "Juan Torres",
+    "lastMessage": "¿Dónde estás?",
+    "avatarUrl": "https://i.pravatar.cc/150?img=4",
+    "lastMessageTime": "Lunes"
+  }
+]
+
 }
