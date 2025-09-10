@@ -1,200 +1,135 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/modelo/contacto.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
-class initial extends StatelessWidget {
+import '../modelo/contacto.dart';
+import 'package:flutter_application_1/bloc1/buscar_bloc.dart';
+import '/bloc1/buscar_event.dart';
+import '/bloc1/buscar_state.dart';
+
+class Inicial extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return ChatListScreen();
+  _InicialState createState() => _InicialState();
+}
+
+class _InicialState extends State<Inicial> {
+  List<Contact> contacts = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadContactsFromJson();
   }
-}
 
-class ChatListScreen extends StatelessWidget {
-  final List<Contact> contacts = [
-    Contact(
-      name: 'Ana Gómez',
-      lastMessage: '¿Nos vemos mañana?',
-      avatarUrl: 'https://i.pravatar.cc/150?img=1',
-      lastMessageTime: '10:30 AM',
-    ),
-    Contact(
-      name: 'Carlos López',
-      lastMessage: 'Te mando los archivos.',
-      avatarUrl: 'https://i.pravatar.cc/150?img=2',
-      lastMessageTime: '9:15 AM',
-    ),
-    Contact(
-      name: 'María Pérez',
-      lastMessage: '¡Feliz cumpleaños!',
-      avatarUrl: 'https://i.pravatar.cc/150?img=3',
-      lastMessageTime: 'Ayer',
-    ),
-    Contact(
-      name: 'Juan Torres',
-      lastMessage: '¿Dónde estás?',
-      avatarUrl: 'https://i.pravatar.cc/150?img=4',
-      lastMessageTime: 'Lunes',
-    ),
-  ];
+  Future<void> loadContactsFromJson() async {
+    final String jsonString = await rootBundle.loadString('assets/contacts.json');
+    final List<dynamic> jsonList = jsonDecode(jsonString);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Chats'),
-        backgroundColor: Colors.blueGrey[800],
-      ),
-      body: ListView.separated(
-        itemCount: contacts.length,
-        separatorBuilder: (_, __) => Divider(color: Colors.white24),
-        itemBuilder: (context, index) {
-          final contact = contacts[index];
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(contact.avatarUrl),
-            ),
-            title: Text(
-              contact.name,
-              style: TextStyle(color: Colors.white),
-            ),
-            subtitle: Text(
-              contact.lastMessage,
-              style: TextStyle(color: Colors.white70),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            trailing: Text(
-              contact.lastMessageTime,
-              style: TextStyle(color: Colors.white54, fontSize: 12),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ChatScreen(contact: contact),
-                ),
-              );
-            },
-          );
-        },
-      ),
-      backgroundColor: Colors.blueGrey[900],
-    );
-  }
-}
-
-class ChatScreen extends StatefulWidget {
-  final Contact contact;
-
-  ChatScreen({required this.contact});
-
-  @override
-  State<ChatScreen> createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
-  final List<String> messages = [
-    "Hola, ¿cómo estás?",
-    "Bien, gracias. ¿Y tú?",
-    "Muy bien, gracias por preguntar.",
-  ];
-  final TextEditingController _controller = TextEditingController();
-
-  void _sendMessage() {
-    final text = _controller.text.trim();
-    if (text.isEmpty) return;
+    final loadedContacts = jsonList.map((json) => Contact.fromJson(json)).toList();
 
     setState(() {
-      messages.add(text);
-      _controller.clear();
+      contacts = loadedContacts;
+      isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final contact = widget.contact;
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.blueGrey[900],
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueGrey[800],
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(contact.avatarUrl),
-            ),
-            SizedBox(width: 12),
-            Text(contact.name),
-          ],
+    return BlocProvider(
+      create: (_) => SearchBloc(contacts),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Chats'),
+          backgroundColor: const Color.fromARGB(255, 207, 223, 231),
         ),
-      ),
-      backgroundColor: Colors.blueGrey[900],
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.all(12),
-              itemCount: messages.length,
-              itemBuilder: (_, index) {
-                final msg = messages[index];
-                bool isMe = index % 2 == 0; 
-
-                return Align(
-                  alignment:
-                      isMe ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 4),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: isMe
-                          ? Colors.tealAccent[400]
-                          : Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      msg,
-                      style: TextStyle(
-                        color: isMe ? Colors.black : Colors.white,
-                      ),
-                    ),
+        backgroundColor: Colors.blueGrey[900],
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: TextField(
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Buscar contactos...',
+                  hintStyle: TextStyle(color: Colors.white54),
+                  prefixIcon: Icon(Icons.search, color: Colors.white70),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                );
-              },
-            ),
-          ),
-          SafeArea(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              color: Colors.blueGrey[800],
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _controller,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'Escribe un mensaje',
-                        hintStyle: TextStyle(color: Colors.white54),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: BorderSide.none,
-                        ),
-                        fillColor: Colors.blueGrey[700],
-                        filled: true,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  IconButton(
-                    icon: Icon(Icons.send, color: Colors.tealAccent[400]),
-                    onPressed: _sendMessage,
-                  ),
-                ],
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.1),
+                ),
+                onChanged: (query) {
+                  context.read<SearchBloc>().add(SearchTextChanged(query));
+                },
               ),
             ),
-          )
-        ],
+            Expanded(
+              child: BlocBuilder<SearchBloc, SearchState>(
+                builder: (context, state) {
+                  if (state is SearchInitial) {
+                    return Center(
+                      child: Text(
+                        'Escribe para buscar contactos',
+                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                      ),
+                    );
+                  } else if (state is SearchLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state is SearchLoaded) {
+                    return ListView.separated(
+                      itemCount: state.results.length,
+                      separatorBuilder: (_, __) => Divider(color: Colors.white24),
+                      itemBuilder: (context, index) {
+                        final contact = state.results[index];
+                        return ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(contact.avatarUrl),
+                          ),
+                          title: Text(
+                            contact.name,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          subtitle: Text(
+                            contact.lastMessage,
+                            style: TextStyle(color: Colors.white70),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          trailing: Text(
+                            contact.lastMessageTime,
+                            style: TextStyle(color: Colors.white54, fontSize: 12),
+                          ),
+                          onTap: () {
+                            // Navegar al chat si quieres
+                          },
+                        );
+                      },
+                    );
+                  } else if (state is SearchEmpty) {
+                    return Center(
+                      child: Text(
+                        'No se encontraron contactos',
+                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                      ),
+                    );
+                  }
+                  return SizedBox.shrink();
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

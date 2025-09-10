@@ -86,7 +86,7 @@ class _FormScreenState extends State<FormScreen> {
               );
             } else if (state is bloc_state.Success) {
               // Mostrar la pantalla inicial tras éxito
-              return initial(); // Aquí muestras la vista inicial
+              return Inicial(); // Aquí muestras la vista inicial
             } else {
               // Cualquier otro estado muestra el formulario login
               return Center(child: LoginForm());

@@ -10,4 +10,13 @@ class Contact {
     required this.avatarUrl,
     required this.lastMessageTime,
   });
+
+  factory Contact.fromJson(Map<String, dynamic> json) {
+    return Contact(
+      name: json['name'],
+      lastMessage: json['lastMessage'],
+      avatarUrl: json['avatarUrl'],
+      lastMessageTime: json['lastMessageTime'],
+    );
+  }
 }
