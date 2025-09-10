@@ -1,28 +1,24 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc_event.dart';
-import 'bloc_state.dart';
+import 'bloc_state.dart' as bloc_state;
 
-class BlocBloc extends Bloc<BlocEvent, BlocState> {
-  BlocBloc() : super(Initial()) {
-    on<SubmitForm>(_onSubmitForm);
-    on<RetrySubmit>(_onRetrySubmit);
-  }
+class BlocBloc extends Bloc<BlocEvent, bloc_state.BlocState> {
+  BlocBloc() : super(bloc_state.Initial()) {
+    on<SubmitForm>((event, emit) async {
+      emit(bloc_state.LoadingView());
 
-  Future<void> _onSubmitForm(SubmitForm event, Emitter<BlocState> emit) async {
-    emit(LoadingView());
+      try {
 
-    await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(Duration(seconds: 2));
 
-    final isValid = event.name.isNotEmpty && event.email.isNotEmpty;
+        emit(bloc_state.Success());
+      } catch (e) {
+        emit(bloc_state.ErrorView(e.toString()));
+      }
+    });
 
-    if (isValid) {
-      emit(Success());
-    } else {
-      emit(ErrorView("Campos incompletos o inválidos"));
-    }
-  }
-
-  void _onRetrySubmit(RetrySubmit event, Emitter<BlocState> emit) {
-    emit(Initial());
+    on<RetrySubmit>((event, emit) {
+      emit(bloc_state.Initial());
+    });
   }
 }
