@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/modelo/contacto.dart';
 
-class SuccessView extends StatelessWidget {
+class initial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChatListScreen();
@@ -135,7 +135,7 @@ class _ChatScreenState extends State<ChatScreen> {
               itemCount: messages.length,
               itemBuilder: (_, index) {
                 final msg = messages[index];
-                bool isMe = index % 2 == 0; // Simula mensajes alternados
+                bool isMe = index % 2 == 0; 
 
                 return Align(
                   alignment:

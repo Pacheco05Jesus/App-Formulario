@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'formulario.dart';  
 import 'vista/succes.dart';
+import "vista/inicial.dart";
 
 void main() {
   runApp(MyApp());
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Formulario Simple',
       debugShowCheckedModeBanner: false,
-      home:SuccessView ()
+      home: initial()
     );
   }
 }
