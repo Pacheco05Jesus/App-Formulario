@@ -57,10 +57,6 @@ class _FormScreenState extends State<FormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey[900],
-      appBar: AppBar(
-        title: Text('Formulario con BLoC'),
-        backgroundColor: Colors.blueGrey[800],
-      ),
       body: BlocListener<BlocBloc, bloc_state.BlocState>(
         listener: (context, state) {
           if (state is bloc_state.LoadingView) {
@@ -70,21 +66,16 @@ class _FormScreenState extends State<FormScreen> {
           }
 
           if (state is bloc_state.Success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Formulario enviado correctamente!')),
-            );
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => initial()),
-            );
-          } else if (state is bloc_state.ErrorView ) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: ${state.error}')),
-            );
+            // Aquí puedes hacer algo adicional cuando el login es exitoso,
+            // pero para mostrar la pantalla initial, mejor lo hacemos en BlocBuilder
           }
         },
         child: BlocBuilder<BlocBloc, bloc_state.BlocState>(
           builder: (context, state) {
-            if (state is bloc_state.ErrorView ) {
+            if (state is bloc_state.LoadingView) {
+              // Si quieres mostrar algo extra aquí, pero ya tienes el diálogo
+              return SizedBox.shrink(); // No muestra nada mientras carga porque hay diálogo
+            } else if (state is bloc_state.ErrorView) {
               return Center(
                 child: ErrorView(
                   errorMessage: state.error,
@@ -93,10 +84,13 @@ class _FormScreenState extends State<FormScreen> {
                   },
                 ),
               );
+            } else if (state is bloc_state.Success) {
+              // Mostrar la pantalla inicial tras éxito
+              return initial(); // Aquí muestras la vista inicial
+            } else {
+              // Cualquier otro estado muestra el formulario login
+              return Center(child: LoginForm());
             }
-
-            // Para otros estados (incluye FormInitial y FormSuccess)
-            return Center(child: SimpleForm());
           },
         ),
       ),
