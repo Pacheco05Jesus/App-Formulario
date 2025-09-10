@@ -36,13 +36,7 @@ class LoginForm extends StatelessWidget {
                   ),
                 ),
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) return 'Campo obligatorio';
-                  // Simple validación de email
-                  final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                  if (!emailRegex.hasMatch(value)) return 'Email inválido';
-                  return null;
-                },
+                validator: (_) => null,
               ),
               SizedBox(height: 24),
               TextFormField(
@@ -58,8 +52,7 @@ class LoginForm extends StatelessWidget {
                   ),
                 ),
                 obscureText: true,
-                validator: (value) =>
-                    (value == null || value.isEmpty) ? 'Campo obligatorio' : null,
+                validator: (_) => null,
               ),
               SizedBox(height: 24),
               SizedBox(
