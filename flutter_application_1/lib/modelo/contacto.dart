@@ -1,22 +1,28 @@
-class Contact {
-  final String name;
-  final String lastMessage;
+class Contacto {
+  final int id;
+  final String nombre;
+  final String email;
   final String avatarUrl;
+  final String lastMessage;
   final String lastMessageTime;
 
-  Contact({
-    required this.name,
-    required this.lastMessage,
+  Contacto({
+    required this.id,
+    required this.nombre,
+    required this.email,
     required this.avatarUrl,
+    required this.lastMessage,
     required this.lastMessageTime,
   });
 
-  factory Contact.fromJson(Map<String, dynamic> json) {
-    return Contact(
-      name: json['name'],
-      lastMessage: json['lastMessage'],
-      avatarUrl: json['avatarUrl'],
-      lastMessageTime: json['lastMessageTime'],
+  factory Contacto.fromJson(Map<String, dynamic> json) {
+    return Contacto(
+      id: json['id'],
+      nombre: json['name'],
+      email: json['email'],
+      avatarUrl: json['avatarUrl'] ?? '', 
+      lastMessage: json['lastMessage'] ?? '',
+      lastMessageTime: json['lastMessageTime'] ?? '',
     );
   }
 }

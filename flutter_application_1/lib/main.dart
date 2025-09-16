@@ -66,15 +66,14 @@ class _FormScreenState extends State<FormScreen> {
           }
 
           if (state is bloc_state.Success) {
-            // Aquí puedes hacer algo adicional cuando el login es exitoso,
-            // pero para mostrar la pantalla initial, mejor lo hacemos en BlocBuilder
+         
           }
         },
         child: BlocBuilder<BlocBloc, bloc_state.BlocState>(
           builder: (context, state) {
             if (state is bloc_state.LoadingView) {
-              // Si quieres mostrar algo extra aquí, pero ya tienes el diálogo
-              return SizedBox.shrink(); // No muestra nada mientras carga porque hay diálogo
+            
+              return SizedBox.shrink(); 
             } else if (state is bloc_state.ErrorView) {
               return Center(
                 child: ErrorView(
@@ -85,10 +84,10 @@ class _FormScreenState extends State<FormScreen> {
                 ),
               );
             } else if (state is bloc_state.Success) {
-              // Mostrar la pantalla inicial tras éxito
-              return Inicial(); // Aquí muestras la vista inicial
+            
+              return Inicial(); 
             } else {
-              // Cualquier otro estado muestra el formulario login
+             
               return Center(child: LoginForm());
             }
           },
