@@ -1,52 +1,32 @@
 [
   {
-    "id": 1,
-    "name": "Juan Pérez",
-    "email": "juan.perez@example.com"
+    "name": "Juan Pérez"
   },
   {
-    "id": 2,
-    "name": "María González",
-    "email": "maria.gonzalez@example.com"
+    "name": "María González"
   },
   {
-    "id": 3,
-    "name": "Carlos Rodríguez",
-    "email": "carlos.rodriguez@example.com"
+    "name": "Carlos Rodríguez"
   },
   {
-    "id": 4,
-    "name": "Ana Martínez",
-    "email": "ana.martinez@example.com"
+    "name": "Ana Martínez"
   },
   {
-    "id": 5,
-    "name": "Luis Hernández",
-    "email": "luis.hernandez@example.com"
+    "name": "Luis Hernández"
   },
   {
-    "id": 6,
-    "name": "Lucía Ramírez",
-    "email": "lucia.ramirez@example.com"
+    "name": "Lucía Ramírez"
   },
   {
-    "id": 7,
-    "name": "Pedro Torres",
-    "email": "pedro.torres@example.com"
+    "name": "Pedro Torres"
   },
   {
-    "id": 8,
-    "name": "Sofía Morales",
-    "email": "sofia.morales@example.com"
+    "name": "Sofía Morales"
   },
   {
-    "id": 9,
-    "name": "Andrés Castro",
-    "email": "andres.castro@example.com"
+    "name": "Andrés Castro"
   },
   {
-    "id": 10,
-    "name": "Elena Navarro",
-    "email": "elena.navarro@example.com"
+    "name": "Elena Navarro"
   }
 ]

@@ -115,21 +115,10 @@ class _InicialState extends State<Inicial> {
                         final contact = state.results[index];
                         return ListTile(
                           leading: CircleAvatar(
-                            backgroundImage: NetworkImage(contact.avatarUrl),
                           ),
                           title: Text(
                             contact.nombre,
                             style: TextStyle(color: Colors.white),
-                          ),
-                          subtitle: Text(
-                            contact.lastMessage,
-                            style: TextStyle(color: Colors.white70),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          trailing: Text(
-                            contact.lastMessageTime,
-                            style: TextStyle(color: Colors.white54, fontSize: 12),
                           ),
                           onTap: () {
                             
