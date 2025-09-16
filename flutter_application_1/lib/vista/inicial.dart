@@ -1,11 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../modelo/contacto.dart';
-import 'package:flutter_application_1/bloc1/buscar_bloc.dart';
+import '/bloc1/buscar_bloc.dart';
 import '/bloc1/buscar_event.dart';
 import '/bloc1/buscar_state.dart';
 
@@ -13,10 +12,11 @@ class Inicial extends StatefulWidget {
   @override
   _InicialState createState() => _InicialState();
 }
-
 class _InicialState extends State<Inicial> {
-  List<Contact> contacts = [];
+  List<Contacto> contacts = [];
   bool isLoading = true;
+  late SearchBloc _searchBloc;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -28,11 +28,12 @@ class _InicialState extends State<Inicial> {
     final String jsonString = await rootBundle.loadString('assets/contacts.json');
     final List<dynamic> jsonList = jsonDecode(jsonString);
 
-    final loadedContacts = jsonList.map((json) => Contact.fromJson(json)).toList();
+    final loadedContacts = jsonList.map((json) => Contacto.fromJson(json)).toList();
 
     setState(() {
       contacts = loadedContacts;
       isLoading = false;
+      _searchBloc = SearchBloc(contacts);
     });
   }
 
@@ -46,7 +47,7 @@ class _InicialState extends State<Inicial> {
     }
 
     return BlocProvider(
-      create: (_) => SearchBloc(contacts),
+      create: (_) => _searchBloc,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Chats'),
@@ -57,21 +58,40 @@ class _InicialState extends State<Inicial> {
           children: [
             Padding(
               padding: const EdgeInsets.all(12),
-              child: TextField(
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: 'Buscar contactos...',
-                  hintStyle: TextStyle(color: Colors.white54),
-                  prefixIcon: Icon(Icons.search, color: Colors.white70),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+              child: Row(
+                children: [
+                  
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: 'Buscar contactos...',
+                        hintStyle: TextStyle(color: Colors.white54),
+                        prefixIcon: Icon(Icons.search, color: Colors.white70),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white.withOpacity(0.1),
+                      ),
+                     
+                    ),
                   ),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.1),
-                ),
-                onChanged: (query) {
-                  context.read<SearchBloc>().add(SearchTextChanged(query));
-                },
+                  SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      final query = _searchController.text.trim();
+                      _searchBloc.add(SearchTextChanged(query));
+                    },
+                    child: Text('Buscar'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    ),
+                  )
+                ],
               ),
             ),
             Expanded(
@@ -80,8 +100,9 @@ class _InicialState extends State<Inicial> {
                   if (state is SearchInitial) {
                     return Center(
                       child: Text(
-                        'Escribe para buscar contactos',
+                        'Escribe y presiona "Buscar" para buscar contactos',
                         style: TextStyle(color: Colors.white70, fontSize: 16),
+                        textAlign: TextAlign.center,
                       ),
                     );
                   } else if (state is SearchLoading) {
@@ -97,7 +118,7 @@ class _InicialState extends State<Inicial> {
                             backgroundImage: NetworkImage(contact.avatarUrl),
                           ),
                           title: Text(
-                            contact.name,
+                            contact.nombre,
                             style: TextStyle(color: Colors.white),
                           ),
                           subtitle: Text(
@@ -111,7 +132,7 @@ class _InicialState extends State<Inicial> {
                             style: TextStyle(color: Colors.white54, fontSize: 12),
                           ),
                           onTap: () {
-                            // Navegar al chat si quieres
+                            
                           },
                         );
                       },
@@ -123,11 +144,18 @@ class _InicialState extends State<Inicial> {
                         style: TextStyle(color: Colors.white70, fontSize: 16),
                       ),
                     );
+                  } else if (state is SearchError) {
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: TextStyle(color: Colors.redAccent),
+                      ),
+                    );
                   }
                   return SizedBox.shrink();
                 },
               ),
-            )
+            ),
           ],
         ),
       ),

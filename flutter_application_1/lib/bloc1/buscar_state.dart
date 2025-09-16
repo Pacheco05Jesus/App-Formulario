@@ -7,7 +7,7 @@ class SearchInitial extends SearchState {}
 class SearchLoading extends SearchState {}
 
 class SearchLoaded extends SearchState {
-  final List<Contact> results;
+  final List<Contacto> results;
 
   SearchLoaded(this.results);
 }
