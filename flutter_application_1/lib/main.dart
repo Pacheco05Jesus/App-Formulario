@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'vista/cargar.dart'; 
-import 'vista/error.dart';  
-import 'vista/inicial.dart'; 
+import 'vista/cargar.dart';
+import 'vista/error.dart';
+import 'vista/inicial.dart';
 import 'bloc/bloc_bloc.dart';
 import 'bloc/bloc_event.dart';
 import 'bloc/bloc_state.dart' as bloc_state;
@@ -66,14 +66,14 @@ class _FormScreenState extends State<FormScreen> {
           }
 
           if (state is bloc_state.Success) {
-         
+
           }
         },
         child: BlocBuilder<BlocBloc, bloc_state.BlocState>(
           builder: (context, state) {
             if (state is bloc_state.LoadingView) {
-            
-              return SizedBox.shrink(); 
+
+              return SizedBox.shrink();
             } else if (state is bloc_state.ErrorView) {
               return Center(
                 child: ErrorView(
